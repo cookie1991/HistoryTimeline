@@ -1,0 +1,6 @@
+db.sqlite3
+venv
+timeline/migrations
+timeline/__pycache__/
+.idea/
+HistoryTimeline/__pycache__/
