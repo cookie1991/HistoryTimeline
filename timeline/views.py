@@ -8,14 +8,24 @@ from rest_framework import permissions
 # Create your views here.
 
 
+class CustomFilterList(django_filters.Filter):
+    def filter(self, qs, value):
+        if value not in (None, ''):
+            values = [v for v in value.split(',')]
+            return qs.filter(**{'%s__%s' % (self.name, "in"): values}).distinct()
+        return qs
+
+
 class TimelineFilter(django_filters.rest_framework.FilterSet):
 
     class Meta:
         model = HistoryTimeline
-        fields = ['country', 'time', 'dynasty', 'person', 'address', 'abstract', 'detailed']
+        fields = ['time', 'dynasty', 'person', 'address', 'abstract', 'detailed']
 
 
 class CountryFilter(django_filters.rest_framework.FilterSet):
+    country = CustomFilterList(name="country")
+    timeline__dynasty = CustomFilterList(name="timeline__dynasty")
 
     class Meta:
         model = CountryModel

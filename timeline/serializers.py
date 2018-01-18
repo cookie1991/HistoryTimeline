@@ -10,7 +10,7 @@ class TimelineSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CountrySerializer(serializers.HyperlinkedModelSerializer):
-    # timeline = TimelineSerializer(many=True, read_only=True)
+    # historyTimeline = TimelineSerializer(many=True, read_only=True)
 
     historyTimeline = serializers.SerializerMethodField('get_timeline')
 
@@ -23,12 +23,12 @@ class CountrySerializer(serializers.HyperlinkedModelSerializer):
         kwargs = {
             # 动态查询的字段
         }
-        if dynasty is not None:
-            kwargs['dynasty'] = dynasty
-        if person is not None:
-            kwargs['person'] = person
-        if address is not None:
-            kwargs['address'] = address
+        if dynasty:
+            kwargs['dynasty__in'] = dynasty.split(',')
+        if person:
+            kwargs['person__in'] = person.split(',')
+        if address:
+            kwargs['address__in'] = address.split(',')
 
         if dynasty is None and person is None and address is None:
             htl = HistoryTimeline.objects.filter(country=obj)
