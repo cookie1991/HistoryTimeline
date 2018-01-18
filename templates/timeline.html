@@ -6,10 +6,10 @@
     </head>
     <body>
         <div id="search" class="search">
-            <form action="" method="GET">
+            <!-- <form action="" method="GET">
                 <input type="text" id="countryname" name="country">
                 <input type="button" value="搜索" onclick="getCountryInfo()">
-            </form>
+            </form> -->
         </div>
         <div id="main" class="main">
             <!-- <h1 id="country" class="title">中国</h1>
@@ -57,7 +57,9 @@
                 var dataabstract='';
                 var jsonObj = response
                 for(i=0;i<jsonObj.length;i++){
+
                     
+
                     line+='<h1 id="country'+i+'" class="title"></h1>';
                     for(j=0;j<jsonObj[i].historyTimeline.length;j++){
 
@@ -92,6 +94,8 @@
                 for(i=0;i<jsonObj.length;i++){
 
                     datacountry=jsonObj[i].country;
+
+                  
 
                     document.getElementById('country'+i).innerHTML=datacountry;
 
@@ -141,6 +145,7 @@
                 var dataabstract='';
                 var jsonObj = response
                 for(i=0;i<jsonObj.length;i++){
+                    line+='<input type="checkbox" id="countrybox'+i+'" class="countrybox"></input>';
                     
                     line+='<h1 id="country'+i+'" class="title"></h1>';
                     for(j=0;j<jsonObj[i].historyTimeline.length;j++){
@@ -176,6 +181,8 @@
                 for(i=0;i<jsonObj.length;i++){
 
                     datacountry=jsonObj[i].country;
+
+                    document.getElementById('countrybox'+i).innerHTML=datacountry;
 
                     document.getElementById('country'+i).innerHTML=datacountry;
 
