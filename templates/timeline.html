@@ -3,6 +3,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
         <title>timeline</title>
         <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+        <script src="template-web.js"></script>
     </head>
     <body>
         <div id="search" class="search">
@@ -11,21 +12,33 @@
                 <input type="button" value="搜索" onclick="getCountryInfo()">
             </form> -->
         </div>
-        <div id="main" class="main">
-            <!-- <h1 id="country" class="title">中国</h1>
-            <div id="year" class="year">
-                <h2>2014年</h2>
-                <div class="list">
-                    <ul>
-                        <li class="cls highlight">
-                            <p id="time" class="date">3月26日</p>
-                            <p id="intro" class="intro">简介</p>
-                        </li>
-                    </ul>
-                </div>
-            </div> -->
+        <div id="main" class="main"></div>
+        <script id="test" type="text/html">
+            <ul>
+                    {{each responseData as value i}}
+                    <li>
+                            <h1 id="country" class="title">{{value.country}}</h1>
+                            {{each value.historyTimeline as timeline j}}
+                            <div id="year" class="year">
+                                    <h2>{{timeline.time}}</h2>
+                                    <div class="list">
+                                        <ul>
+                                            <li class="cls highlight">
+                                                <p id="time" class="date">{{timeline.time}}</p>
+                                                <p id="intro" class="intro">{{timeline.abstract}}</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            {{/each}}
+                            
+                    </li>
+                    {{/each}}
+            
+        </ul>
+        </script>
 
-        </div>
+        
           
     </body>
     <script type="text/javascript">
@@ -131,75 +144,82 @@
             // data:$('form').serialize(),
             crossDomain: true, 
             xhrFields:{'Access-Control-Allow-Origin': '*' },
-            
                  
-            success:function(response){  
-                // console.log(JSON.stringify(data))  
-                // console.log(data)  
+            
+            success:function(response){ 
                
-                var line='';
-                var datacountry='';
-                var datatime='';
-                var datadynasty='';
-                var dataperson='';
-                var dataabstract='';
-                var jsonObj = response
-                for(i=0;i<jsonObj.length;i++){
-                    line+='<input type="checkbox" id="countrybox'+i+'" class="countrybox"></input>';
+                console.log(JSON.stringify(response))  
+                console.log(response) 
+                var data = {
+                    responseData: response
+                };
+                
+                var html = template('test', data);
+                document.getElementById('main').innerHTML = html;
+               
+                // var line='';
+                // var datacountry='';
+                // var datatime='';
+                // var datadynasty='';
+                // var dataperson='';
+                // var dataabstract='';
+                // var jsonObj = response
+                // for(i=0;i<jsonObj.length;i++){
+                //     line+='<input type="checkbox" id="countrybox'+i+'" class="countrybox"></input>';
                     
-                    line+='<h1 id="country'+i+'" class="title"></h1>';
-                    for(j=0;j<jsonObj[i].historyTimeline.length;j++){
+                //     line+='<h1 id="country'+i+'" class="title"></h1>';
+                //     for(j=0;j<jsonObj[i].historyTimeline.length;j++){
 
-                        line+='<div id="year'+i+'_'+j+'" class="year">';
-                        line+='<h2></h2>';
-                        line+='</div>';
-                        line+='<div class="list">';
-                        line+='<ul>';
-                        line+='<li class="cls highlight">';
-                        line+='<div id="dynasty'+i+'_'+j+'" class="dynasty">';
-                        line+='<h2></h2>';
-                        line+='</div>';
-                        line+='<div id="person'+i+'_'+j+'" class="person">';
-                        line+='<h2></h2>';
-                        line+='</div>';
-                        line+='<div id="abstract'+i+'_'+j+'" class="abstract">';
-                        line+='<h2></h2>';
-                        line+='</div>';
-                        line+='</li>';
-                        line+='</ul>';                       
-                        line+='</div>';
+                //         line+='<div id="year'+i+'_'+j+'" class="year">';
+                //         line+='<h2></h2>';
+                //         line+='</div>';
+                //         line+='<div class="list">';
+                //         line+='<ul>';
+                //         line+='<li class="cls highlight">';
+                //         line+='<div id="dynasty'+i+'_'+j+'" class="dynasty">';
+                //         line+='<h2></h2>';
+                //         line+='</div>';
+                //         line+='<div id="person'+i+'_'+j+'" class="person">';
+                //         line+='<h2></h2>';
+                //         line+='</div>';
+                //         line+='<div id="abstract'+i+'_'+j+'" class="abstract">';
+                //         line+='<h2></h2>';
+                //         line+='</div>';
+                //         line+='</li>';
+                //         line+='</ul>';                       
+                //         line+='</div>';
                         
-                    }
+                //     }
                    
                                     
-                    console.log(jsonObj[i].country);
+                //     console.log(jsonObj[i].country);
                                                       
-                    document.getElementById('main').innerHTML=line;
+                //     document.getElementById('main').innerHTML=line;
                                       
-                }
+                // }
 
-                for(i=0;i<jsonObj.length;i++){
+                // for(i=0;i<jsonObj.length;i++){
 
-                    datacountry=jsonObj[i].country;
+                //     datacountry=jsonObj[i].country;
 
-                    document.getElementById('countrybox'+i).innerHTML=datacountry;
+                //     document.getElementById('countrybox'+i).innerHTML=datacountry;
 
-                    document.getElementById('country'+i).innerHTML=datacountry;
+                //     document.getElementById('country'+i).innerHTML=datacountry;
 
-                    for(j=0;j<jsonObj[i].historyTimeline.length;j++){  
+                //     for(j=0;j<jsonObj[i].historyTimeline.length;j++){  
                         
-                        datatime=jsonObj[i].historyTimeline[j].time;
-                        document.getElementById('year'+i+'_'+j).innerHTML=datatime;
-                        datadynasty=jsonObj[i].historyTimeline[j].dynasty;
-                        document.getElementById('dynasty'+i+'_'+j).innerHTML=datadynasty;
+                //         datatime=jsonObj[i].historyTimeline[j].time;
+                //         document.getElementById('year'+i+'_'+j).innerHTML=datatime;
+                //         datadynasty=jsonObj[i].historyTimeline[j].dynasty;
+                //         document.getElementById('dynasty'+i+'_'+j).innerHTML=datadynasty;
 
-                        dataperson=jsonObj[i].historyTimeline[j].person;
-                        document.getElementById('person'+i+'_'+j).innerHTML=dataperson;
+                //         dataperson=jsonObj[i].historyTimeline[j].person;
+                //         document.getElementById('person'+i+'_'+j).innerHTML=dataperson;
 
-                        dataabstract=jsonObj[i].historyTimeline[j].abstract;
-                        document.getElementById('abstract'+i+'_'+j).innerHTML=dataabstract;
-                    }    
-                }
+                //         dataabstract=jsonObj[i].historyTimeline[j].abstract;
+                //         document.getElementById('abstract'+i+'_'+j).innerHTML=dataabstract;
+                //     }    
+                // }
             },  
             error:function(){  
                               
