@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+        <title>detailed</title>
+        <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+        <script src="template-web.js"></script>
+    </head>
+    <body>
+        <div id="search" class="search">
+            <!-- <form action="" method="GET">
+                <input type="text" id="countryname" name="country">
+                <input type="button" value="搜索" onclick="getCountryInfo()">
+            </form> -->
+        </div>
+        <div id="main" class="main"></div>
+        <script id="test" type="text/html">
+            
+                {{each responseData as value i}}
+               
+                    <h1 id="country" class="title">{{value.country}}</h1>
+                    {{each value.historyTimeline as timeline j}}
+                    <div id="year" class="year">
+                        <h2>{{timeline.time}}</h2>
+                        <div class="list">
+                            <ul>
+                                <li class="cls highlight">
+                                    <p id="time" class="date">{{timeline.time}}</p>
+                                    <a href="detailed.html" target="_blank"><p id="intro" class="intro">{{timeline.abstract}}</p></a>    
+                                </li>
+                            </ul>
+                        </div>
+                        </div>
+                    {{/each}}        
+                
+                {{/each}}
+        
+        </script>
+
+        
+          
+    </body>
+    <script type="text/javascript">
+ 
+    $.ajax({  
+            type:"get",  
+            url:"http://127.0.0.1:8000/timeline/country",  
+            async:true,  
+            dataType:"json", 
+            // data:$('form').serialize(),
+            crossDomain: true, 
+            xhrFields:{'Access-Control-Allow-Origin': '*' },
+                 
+            
+            success:function(response){ 
+               
+                console.log(JSON.stringify(response))  
+                console.log(response) 
+                var data = {
+                    responseData: response
+                };
+                
+                var html = template('test', data);
+                document.getElementById('main').innerHTML = html;
+               
+            },  
+            error:function(){  
+                              
+                alert('NO');               
+            }         
+        }); 
+
+    </script>
+</html>
