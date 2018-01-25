@@ -6,34 +6,39 @@
         <script src="template-web.js"></script>
     </head>
     <body>
-        <div id="search" class="search">
-            <!-- <form action="" method="GET">
-                <input type="text" id="countryname" name="country">
-                <input type="button" value="搜索" onclick="getCountryInfo()">
-            </form> -->
-        </div>
+
         <div id="main" class="main"></div>
         <script id="test" type="text/html">
-            
+            <div id="search" class="search">
                 {{each responseData as value i}}
-               
-                    <h1 id="country" class="title">{{value.country}}</h1>
-                    {{each value.historyTimeline as timeline j}}
-                    <div id="year" class="year">
-                        <h2>{{timeline.time}}</h2>
-                        <div class="list">
-                            <ul>
-                                <li class="cls highlight">
-                                    <p id="time" class="date">{{timeline.time}}</p>
-                                    <a href="detailed.html?id={{timeline.id}}" target="_blank"><p id="intro" class="intro">{{timeline.abstract}}</p></a>    
-                                    <p id="detailed" class="detailed">{{timeline.detailed}}</p>
-                                </li>
-                            </ul>
-                        </div>
-                        </div>
-                    {{/each}}        
-                
+                    <input type="checkbox" name="country" id="choosecountry{{i}}" value="{{value.country}}">{{value.country}}
                 {{/each}}
+
+                {{each responseData as value i}}
+                    {{each value.historyTimeline as timeline j}}
+                        <input type="checkbox" name="timeline__dynasty" id="choosedynasty{{j}}" value="{{timeline.dynasty}}">{{timeline.dynasty}}
+                    {{/each}}
+                {{/each}}
+                <input type="button" value="确认" onclick="getCountryInfo()">       
+            </div>
+            
+            {{each responseData as value i}}
+                <h1 id="country{{i}}" class="title">{{value.country}}</h1>
+                {{each value.historyTimeline as timeline j}}
+                <div id="year" class="year">
+                    <h2>{{timeline.time}}</h2>
+                    <div class="list">
+                        <ul>
+                            <li class="cls highlight">
+                                <p id="time" class="date">{{timeline.time}}</p>
+                                <a href="detailed.html?id={{timeline.id}}" target="_blank"><p id="intro" class="intro">{{timeline.abstract}}</p></a>    
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                {{/each}}        
+            
+            {{/each}}
         
         </script>
 
@@ -41,90 +46,52 @@
           
     </body>
     <script type="text/javascript">
+
+    var params = {};
+    var lists = ["country", "timeline__dynasty"];
+
     
+    function fun(){
+        for(li in lists){
+            obj = document.getElementsByName(lists[li]);
+            var check_val = [];
+            for(k in obj){
+                if(obj[k].checked)
+                    check_val.push(obj[k].value);
+            }
+            params[lists[li]]=check_val.toString();
+            console.log(params);
+        }
+
+
+    }
+
     function getCountryInfo() {
-        var params = {country: $('#countryname').val()};
-        alert(JSON.stringify(params));
+   
+        fun();
 
         $.ajax({  
             type:"get",  
             url:"http://127.0.0.1:8000/timeline/country",  
             async:true,  
             dataType:"json", 
-            data:$('form').serialize(),
-            // data:{country:"中国"},
+            data:params,
+            // data:{country : "", timeline__dynasty: "江户时代"},
             crossDomain: true, 
             xhrFields:{'Access-Control-Allow-Origin': '*' },
             
                  
-            success:function(response){  
-                // console.log(JSON.stringify(data))  
-                // console.log(data)  
-               
-                var line='';
-                var datacountry='';
-                var datatime='';
-                var datadynasty='';
-                var dataperson='';
-                var dataabstract='';
-                var jsonObj = response
-                for(i=0;i<jsonObj.length;i++){
+            success:function(response){
 
-                    
+                console.log(JSON.stringify(response))  
 
-                    line+='<h1 id="country'+i+'" class="title"></h1>';
-                    for(j=0;j<jsonObj[i].historyTimeline.length;j++){
-
-                        line+='<div id="year'+i+'_'+j+'" class="year">';
-                        line+='<h2></h2>';
-                        line+='</div>';
-                        line+='<div class="list">';
-                        line+='<ul>';
-                        line+='<li class="cls highlight">';
-                        line+='<div id="dynasty'+i+'_'+j+'" class="dynasty">';
-                        line+='<h2></h2>';
-                        line+='</div>';
-                        line+='<div id="person'+i+'_'+j+'" class="person">';
-                        line+='<h2></h2>';
-                        line+='</div>';
-                        line+='<div id="abstract'+i+'_'+j+'" class="abstract">';
-                        line+='<h2></h2>';
-                        line+='</div>';
-                        line+='</li>';
-                        line+='</ul>';                       
-                        line+='</div>';
-                        
-                    }
-                   
-                                    
-                    console.log(jsonObj[i].country);
-                                                      
-                    document.getElementById('main').innerHTML=line;
-                                      
-                }
-
-                for(i=0;i<jsonObj.length;i++){
-
-                    datacountry=jsonObj[i].country;
-
-                  
-
-                    document.getElementById('country'+i).innerHTML=datacountry;
-
-                    for(j=0;j<jsonObj[i].historyTimeline.length;j++){  
-                        
-                        datatime=jsonObj[i].historyTimeline[j].time;
-                        document.getElementById('year'+i+'_'+j).innerHTML=datatime;
-                        datadynasty=jsonObj[i].historyTimeline[j].dynasty;
-                        document.getElementById('dynasty'+i+'_'+j).innerHTML=datadynasty;
-
-                        dataperson=jsonObj[i].historyTimeline[j].person;
-                        document.getElementById('person'+i+'_'+j).innerHTML=dataperson;
-
-                        dataabstract=jsonObj[i].historyTimeline[j].abstract;
-                        document.getElementById('abstract'+i+'_'+j).innerHTML=dataabstract;
-                    }    
-                }
+                var data = {
+                    responseData: response
+                };
+                
+                var html = template('test', data);
+                document.getElementById('main').innerHTML = html;
+                 
             },  
             error:function(){  
                               
